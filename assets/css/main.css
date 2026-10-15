@@ -7,21 +7,22 @@
     --primary: #2563eb;
     --primary-dark: #1e40af;
 
-    --background: #f1f5f9;
-    --surface: #ffffff;
-    --surface-secondary: #f8fafc;
+    /* Fundo suave e cartões */
+    --background: #e9efed;
+    --surface: #fbfcfa;
+    --surface-secondary: #f1f5f2;
 
-    --text: #1e293b;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
+    --text: #26332f;
+    --text-secondary: #52615b;
+    --text-muted: #718078;
 
-    --border: #dbe2ea;
+    --border: #d5dfd9;
 
     --success: #166534;
-    --success-bg: #f0fdf4;
+    --success-bg: #f0f7f1;
 
     --danger: #991b1b;
-    --danger-bg: #fef2f2;
+    --danger-bg: #faf0ef;
 
     --radius: 8px;
     --container-width: 1100px;
