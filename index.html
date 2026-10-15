@@ -1,177 +1,656 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechAssist - Projeto de Banco de Dados Relacional</title>
+    <meta name="description" content="Projeto de banco de dados relacional TechAssist para gestão de assistência técnica de equipamentos de TI.">
+
+    <title>TechAssist - Banco de Dados Relacional</title>
+
     <link rel="stylesheet" href="./assets/css/main.css">
 </head>
+
 <body>
 
-    <!-- Cabeçalho Principal -->
+    <!-- Cabeçalho -->
     <header class="header">
         <div class="container">
             <span class="badge">SGBD Relacional MySQL</span>
             <h1>TechAssist Soluções em TI</h1>
-            <p>Documentação Completa de Modelagem, Normalização (1FN - 4FN), Scripts SQL e Cloud Hosting</p>
+            <p>
+                Projeto de banco de dados relacional: modelagem,
+                normalização, consultas SQL e relatórios.
+            </p>
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
+    <!-- Conteúdo principal -->
     <main class="container">
 
-        <!-- 1. Domínio & Contextualização -->
-        <section class="card">
-            <h2>1. Domínio & Contextualização do Negócio</h2>
-            <p>O projeto contempla o domínio de <strong>Gestão de Assistência Técnica de Equipamentos de TI (tech_assist)</strong>. A empresa <em>TechAssist</em> realiza manutenção em notebooks, computadores, celulares e impressoras.</p>
-            
+        <!-- 1. Domínio e contextualização -->
+        <section class="card" id="contextualizacao">
+            <h2>1. Domínio e Contextualização do Negócio</h2>
+
+            <p>
+                O projeto contempla o domínio de
+                <strong>gestão de assistência técnica de equipamentos de TI</strong>,
+                utilizando o banco de dados <code>tech_assist</code>.
+                A empresa fictícia TechAssist realiza manutenção em notebooks,
+                computadores, celulares e impressoras.
+            </p>
+
             <div class="grid-2">
                 <div class="box-problem">
-                    <h3>Cenário Sem SGBD Relacional</h3>
+                    <h3>Cenário sem um SGBD relacional</h3>
                     <ul>
-                        <li>Cadastros duplicados de clientes e dados inconsistentes;</li>
-                        <li>Falta de vínculo entre proprietários e equipamentos;</li>
-                        <li>Dificuldade no rastreamento de técnicos e Ordens de Serviço (OS);</li>
-                        <li>Descontrole total no estoque de peças de reposição.</li>
+                        <li>Cadastros duplicados e dados inconsistentes.</li>
+                        <li>Falta de vínculo entre clientes e equipamentos.</li>
+                        <li>Dificuldade para acompanhar técnicos e ordens de serviço.</li>
+                        <li>Falta de controle sobre as peças em estoque.</li>
                     </ul>
                 </div>
+
                 <div class="box-solution">
-                    <h3> Solução com SGBD MySQL (InnoDB)</h3>
+                    <h3>Solução com MySQL e InnoDB</h3>
                     <ul>
-                        <li>Propriedades ACID e integridade referencial estrita;</li>
-                        <li>Centralização do histórico de manutenção e faturamento;</li>
-                        <li>Agilidade na consulta de peças e alocação da equipe técnica;</li>
-                        <li>Métricas operacionais e relatórios gerenciais em tempo real.</li>
+                        <li>Integridade dos dados e relacionamentos entre tabelas.</li>
+                        <li>Centralização do histórico de manutenção.</li>
+                        <li>Consultas para acompanhar serviços e técnicos.</li>
+                        <li>Relatórios para auxiliar o controle dos serviços e do estoque.</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- 2. Modelagem Lógica -->
-        <section class="card">
+        <!-- 2. Modelagem lógica -->
+        <section class="card" id="modelagem">
             <h2>2. Modelagem Lógica do Banco de Dados</h2>
-            <p>Estrutura composta por 5 tabelas relacionais com chaves primárias (PK) e chaves estrangeiras (FK):</p>
-            
+
+            <p>
+                O banco de dados é composto por cinco tabelas,
+                organizadas para armazenar clientes, equipamentos,
+                técnicos, serviços e peças.
+            </p>
+
             <div class="table-wrapper">
                 <table>
                     <thead>
                         <tr>
-                            <th>Tabela</th>
-                            <th>Campos / Atributos</th>
-                            <th>Tipo de Dado</th>
-                            <th>Chave / Restrição</th>
+                            <th scope="col">Tabela</th>
+                            <th scope="col">Campos / Atributos</th>
+                            <th scope="col">Tipos de dados principais</th>
+                            <th scope="col">Chaves e restrições</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <tr>
                             <td><strong>clientes</strong></td>
                             <td>id_cliente, cli_nome, cli_cpf, cli_email, cli_telefone</td>
-                            <td>INT, VARCHAR(100), CHAR(11), VARCHAR(100)</td>
-                            <td>PK (Auto Inc), UNIQUE, NOT NULL</td>
+                            <td>INT, VARCHAR(100), CHAR(11), VARCHAR(100), VARCHAR(20)</td>
+                            <td>PK em id_cliente; CPF UNIQUE</td>
                         </tr>
+
                         <tr>
                             <td><strong>equipamentos</strong></td>
                             <td>id_equipamento, id_cliente, equ_tipo, equ_marca, equ_modelo, equ_problema</td>
-                            <td>INT, VARCHAR(100)</td>
-                            <td>PK, FK -> clientes(id_cliente)</td>
+                            <td>INT, VARCHAR(50), VARCHAR(100), TEXT</td>
+                            <td>PK em id_equipamento; FK em id_cliente</td>
                         </tr>
+
                         <tr>
                             <td><strong>tecnicos</strong></td>
                             <td>id_tecnico, tec_nome, tec_especialidade</td>
                             <td>INT, VARCHAR(100)</td>
-                            <td>PK (Auto Inc), NOT NULL</td>
+                            <td>PK em id_tecnico</td>
                         </tr>
+
                         <tr>
                             <td><strong>servicos</strong></td>
                             <td>id_servico, id_equipamento, id_tecnico, ser_data_entrada, ser_data_saida, ser_status, ser_valor</td>
                             <td>INT, DATETIME, VARCHAR(50), DECIMAL(10,2)</td>
-                            <td>PK, FK -> equipamentos, FK -> tecnicos</td>
+                            <td>PK em id_servico; FK em id_equipamento e id_tecnico</td>
                         </tr>
+
                         <tr>
                             <td><strong>pecas</strong></td>
                             <td>id_peca, pec_nome, pec_quantidade, pec_preco</td>
                             <td>INT, VARCHAR(100), DECIMAL(10,2)</td>
-                            <td>PK (Auto Inc), NOT NULL</td>
+                            <td>PK em id_peca</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
             <div class="card-highlight">
-                <h4>Relacionamentos e Cardinalidades:</h4>
-                <p>• <strong>clientes (1) &rarr; (N) equipamentos:</strong> Um cliente pode ter múltiplos equipamentos cadastrados.<br>
-                   • <strong>equipamentos (1) &rarr; (N) servicos:</strong> Um equipamento possui um histórico de várias OS.<br>
-                   • <strong>tecnicos (1) &rarr; (N) servicos:</strong> Um técnico assume diversas ordens de serviço ao longo do tempo.</p>
+                <h3>Relacionamentos e cardinalidades</h3>
+
+                <ul>
+                    <li>
+                        <strong>clientes (1) → (N) equipamentos:</strong>
+                        um cliente pode cadastrar vários equipamentos.
+                    </li>
+                    <li>
+                        <strong>equipamentos (1) → (N) serviços:</strong>
+                        um equipamento pode possuir vários serviços ao longo do tempo.
+                    </li>
+                    <li>
+                        <strong>técnicos (1) → (N) serviços:</strong>
+                        um técnico pode ser responsável por vários serviços.
+                    </li>
+                </ul>
             </div>
         </section>
 
-        <!-- 3. Formas Normais -->
-        <section class="card">
+        <!-- 3. Formas normais -->
+        <section class="card" id="normalizacao">
             <h2>3. Aplicação das Formas Normais</h2>
+
+            <p>
+                A normalização organiza os dados para reduzir redundâncias
+                e evitar problemas de inserção, atualização e exclusão.
+            </p>
+
             <div class="fn-grid">
                 <div class="fn-card">
                     <span class="fn-badge">1FN</span>
                     <h3>Primeira Forma Normal</h3>
-                    <p>Atributos atômicos e indivisíveis. Eliminação de colunas e grupos repetitivos.</p>
+                    <p>
+                        Cada campo armazena um valor atômico,
+                        sem grupos repetitivos na mesma coluna.
+                    </p>
                 </div>
+
                 <div class="fn-card">
                     <span class="fn-badge">2FN</span>
                     <h3>Segunda Forma Normal</h3>
-                    <p>Atendimento à 1FN e dependência funcional total da Chave Primária simples.</p>
+                    <p>
+                        Atende à 1FN e elimina dependências parciais
+                        em relação a chaves compostas.
+                    </p>
                 </div>
+
                 <div class="fn-card">
                     <span class="fn-badge">3FN</span>
                     <h3>Terceira Forma Normal</h3>
-                    <p>Eliminação de dependências transitivas entre atributos não-chave.</p>
+                    <p>
+                        Atende à 2FN e evita dependências transitivas
+                        entre atributos não-chave.
+                    </p>
                 </div>
+
                 <div class="fn-card">
                     <span class="fn-badge">4FN</span>
                     <h3>Quarta Forma Normal</h3>
-                    <p>Isolamento da tabela de peças para evitar dependências multivaloradas independentes.</p>
+                    <p>
+                        Evita dependências multivaloradas independentes
+                        que possam gerar redundância nos registros.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Consultas Destaque -->
-        <section class="card">
-            <h2>4. Resumo de Faturamento e Indicadores (SQL)</h2>
-            <div class="metrics-grid">
-                <div class="metric-box">
-                    <span class="metric-number">R$ 1.980,00</span>
-                    <span class="metric-label">Faturamento Total Bruto (SUM)</span>
-                </div>
-                <div class="metric-box">
-                    <span class="metric-number">R$ 247,50</span>
-                    <span class="metric-label">Ticket Médio por OS (AVG)</span>
-                </div>
-                <div class="metric-box">
-                    <span class="metric-number">R$ 8.485,00</span>
-                    <span class="metric-label">Valor do Estoque de Peças</span>
-                </div>
-            </div>
-        </section>
+        <!-- 4. Consultas SQL -->
+        <section class="card sql-section" id="consultas-sql">
+            <h2>4. Consultas SQL — Relatórios e Operações</h2>
 
-        <!-- 5. Cloud Hosting & Dump -->
-        <section class="card">
-            <h2>5. Implantação em Nuvem & Backup (Dump)</h2>
-            <div class="grid-2">
-                <div>
-                    <h3>☁️ Hosting Cloud (Aiven / Azure)</h3>
-                    <ol>
-                        <li>Provisionamento do serviço <strong>Aiven for MySQL</strong>;</li>
-                        <li>Configuração de regras de firewall (IP Allowlist);</li>
-                        <li>Download do certificado de autoridade SSL (CA);</li>
-                        <li>Execução dos scripts DDL e DML via MySQL Workbench.</li>
-                    </ol>
+            <p>
+                As 15 consultas demonstram relacionamentos entre tabelas,
+                filtros, ordenações, agrupamentos e funções agregadas.
+                Clique em uma consulta para visualizar seu código SQL.
+            </p>
+
+            <div class="sql-summary">
+                <div class="sql-summary-item">
+                    <span class="sql-summary-number">15</span>
+                    <span class="sql-summary-label">Consultas SQL</span>
                 </div>
-                <div>
-                    <h3>💾 Dump e Restauração</h3>
-                    <p><strong>Gerar Backup Completo:</strong></p>
-                    <pre><code>mysqldump -u root -p --databases tech_assist &gt; tech_assist_dump.sql</code></pre>
-                    <p><strong>Restaurar Banco de Dados:</strong></p>
-                    <pre><code>mysql -u root -p &lt; tech_assist_dump.sql</code></pre>
+
+                <div class="sql-summary-item">
+                    <span class="sql-summary-number">JOIN</span>
+                    <span class="sql-summary-label">Relacionamentos</span>
+                </div>
+
+                <div class="sql-summary-item">
+                    <span class="sql-summary-number">SUM / AVG</span>
+                    <span class="sql-summary-label">Funções agregadas</span>
                 </div>
             </div>
+
+            <!-- Grupo 1 -->
+            <div class="sql-group">
+                <h3 class="sql-group-title">01. Consultas e Relacionamentos</h3>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">01</span>
+                        <span class="sql-item-info">
+                            <strong>Listagem completa dos serviços</strong>
+                            <small>INNER JOIN · ORDER BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Exibe os serviços, clientes, equipamentos, técnicos,
+                            status e valores, ordenados pelo ID.
+                        </p>
+
+                        <pre><code>SELECT
+    s.id_servico,
+    c.cli_nome AS cliente,
+    e.equ_tipo AS equipamento,
+    e.equ_marca AS marca,
+    e.equ_modelo AS modelo,
+    t.tec_nome AS tecnico,
+    s.ser_status AS status,
+    s.ser_valor AS valor
+FROM servicos s
+INNER JOIN equipamentos e
+    ON s.id_equipamento = e.id_equipamento
+INNER JOIN clientes c
+    ON e.id_cliente = c.id_cliente
+INNER JOIN tecnicos t
+    ON s.id_tecnico = t.id_tecnico
+ORDER BY s.id_servico;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">02</span>
+                        <span class="sql-item-info">
+                            <strong>Serviços do cliente Nicolas</strong>
+                            <small>WHERE · INNER JOIN · ORDER BY DESC</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Filtra os serviços do cliente Nicolas e ordena
+                            pela data de entrada, da mais recente para a mais antiga.
+                        </p>
+
+                        <pre><code>SELECT
+    c.cli_nome AS cliente,
+    e.equ_tipo AS equipamento,
+    e.equ_modelo AS modelo,
+    s.ser_status AS status,
+    t.tec_nome AS tecnico,
+    s.ser_valor AS valor
+FROM clientes c
+INNER JOIN equipamentos e
+    ON c.id_cliente = e.id_cliente
+INNER JOIN servicos s
+    ON e.id_equipamento = s.id_equipamento
+INNER JOIN tecnicos t
+    ON s.id_tecnico = t.id_tecnico
+WHERE c.cli_nome = 'Nicolas'
+ORDER BY s.ser_data_entrada DESC;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">06</span>
+                        <span class="sql-item-info">
+                            <strong>Equipamentos por cliente</strong>
+                            <small>INNER JOIN · ORDER BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Lista os clientes e os dados dos seus equipamentos,
+                            em ordem alfabética pelo nome.
+                        </p>
+
+                        <pre><code>SELECT
+    c.cli_nome,
+    e.equ_tipo,
+    e.equ_marca,
+    e.equ_modelo
+FROM clientes c
+INNER JOIN equipamentos e
+    ON c.id_cliente = e.id_cliente
+ORDER BY c.cli_nome;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">07</span>
+                        <span class="sql-item-info">
+                            <strong>Serviços e técnicos responsáveis</strong>
+                            <small>INNER JOIN · ORDER BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Mostra o ID de cada serviço, o técnico responsável,
+                            sua especialidade e o status do atendimento.
+                        </p>
+
+                        <pre><code>SELECT
+    s.id_servico,
+    t.tec_nome,
+    t.tec_especialidade,
+    s.ser_status
+FROM servicos s
+INNER JOIN tecnicos t
+    ON s.id_tecnico = t.id_tecnico
+ORDER BY s.id_servico;</code></pre>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Grupo 2 -->
+            <div class="sql-group">
+                <h3 class="sql-group-title">02. Relatórios por Técnico</h3>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">03</span>
+                        <span class="sql-item-info">
+                            <strong>Quantidade e valor por técnico</strong>
+                            <small>COUNT · SUM · GROUP BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Calcula a quantidade de serviços de cada técnico
+                            e soma os valores correspondentes.
+                        </p>
+
+                        <pre><code>SELECT
+    t.tec_nome AS tecnico,
+    t.tec_especialidade AS especialidade,
+    COUNT(s.id_servico) AS quantidade_servicos,
+    SUM(s.ser_valor) AS valor_total
+FROM tecnicos t
+INNER JOIN servicos s
+    ON t.id_tecnico = s.id_tecnico
+GROUP BY
+    t.id_tecnico,
+    t.tec_nome,
+    t.tec_especialidade
+ORDER BY valor_total DESC;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">04</span>
+                        <span class="sql-item-info">
+                            <strong>Técnicos com mais de um serviço</strong>
+                            <small>COUNT · AVG · HAVING</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Identifica técnicos com mais de um serviço,
+                            exibindo a quantidade e o valor médio cobrado.
+                        </p>
+
+                        <pre><code>SELECT
+    t.tec_nome AS tecnico,
+    COUNT(s.id_servico) AS quantidade_servicos,
+    ROUND(AVG(s.ser_valor), 2) AS valor_medio
+FROM tecnicos t
+INNER JOIN servicos s
+    ON t.id_tecnico = s.id_tecnico
+GROUP BY
+    t.id_tecnico,
+    t.tec_nome
+HAVING COUNT(s.id_servico) > 1
+ORDER BY quantidade_servicos DESC;</code></pre>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Grupo 3 -->
+            <div class="sql-group">
+                <h3 class="sql-group-title">03. Filtros e Situação dos Serviços</h3>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">05</span>
+                        <span class="sql-item-info">
+                            <strong>Serviços em andamento</strong>
+                            <small>WHERE</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Lista os serviços em andamento, com equipamento,
+                            status e valor.
+                        </p>
+
+                        <pre><code>SELECT
+    id_servico,
+    id_equipamento,
+    ser_status,
+    ser_valor
+FROM servicos
+WHERE ser_status = 'Em andamento';</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">11</span>
+                        <span class="sql-item-info">
+                            <strong>Notebooks com problemas específicos</strong>
+                            <small>WHERE · LIKE · OR · INNER JOIN</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Localiza notebooks com descrições de problemas
+                            que contenham "defeito" ou "Lentidao".
+                        </p>
+
+                        <pre><code>SELECT
+    c.cli_nome AS cliente,
+    e.equ_marca AS marca,
+    e.equ_modelo AS modelo,
+    e.equ_problema AS problema,
+    t.tec_nome AS tecnico,
+    s.ser_status AS status
+FROM clientes c
+INNER JOIN equipamentos e
+    ON c.id_cliente = e.id_cliente
+INNER JOIN servicos s
+    ON e.id_equipamento = s.id_equipamento
+INNER JOIN tecnicos t
+    ON s.id_tecnico = t.id_tecnico
+WHERE e.equ_tipo = 'Notebook'
+  AND (
+      e.equ_problema LIKE '%defeito%'
+      OR e.equ_problema LIKE '%Lentidao%'
+  )
+ORDER BY c.cli_nome;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">13</span>
+                        <span class="sql-item-info">
+                            <strong>Serviços acima de R$ 200,00</strong>
+                            <small>WHERE · ORDER BY DESC</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Apresenta os serviços com valor superior a
+                            R$ 200,00, do mais caro para o mais barato.
+                        </p>
+
+                        <pre><code>SELECT
+    id_servico,
+    ser_valor,
+    ser_status
+FROM servicos
+WHERE ser_valor > 200
+ORDER BY ser_valor DESC;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">14</span>
+                        <span class="sql-item-info">
+                            <strong>Quantidade de serviços por status</strong>
+                            <small>COUNT · GROUP BY · ORDER BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Conta os serviços de cada status,
+                            do mais frequente para o menos frequente.
+                        </p>
+
+                        <pre><code>SELECT
+    ser_status,
+    COUNT(*) AS quantidade
+FROM servicos
+GROUP BY ser_status
+ORDER BY quantidade DESC;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">15</span>
+                        <span class="sql-item-info">
+                            <strong>Serviços concluídos</strong>
+                            <small>WHERE · ORDER BY ASC</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Exibe o ID, a data de saída e o valor dos serviços
+                            concluídos, da conclusão mais antiga para a mais recente.
+                        </p>
+
+                        <pre><code>SELECT
+    id_servico,
+    ser_data_saida,
+    ser_valor
+FROM servicos
+WHERE ser_status = 'Concluido'
+ORDER BY ser_data_saida ASC;</code></pre>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Grupo 4 -->
+            <div class="sql-group">
+                <h3 class="sql-group-title">04. Indicadores e Agregações</h3>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">08</span>
+                        <span class="sql-item-info">
+                            <strong>Quantidade de equipamentos por cliente</strong>
+                            <small>COUNT · GROUP BY</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Conta os equipamentos de cada cliente,
+                            do maior número para o menor.
+                        </p>
+
+                        <pre><code>SELECT
+    c.cli_nome,
+    COUNT(e.id_equipamento) AS quantidade_equipamentos
+FROM clientes c
+INNER JOIN equipamentos e
+    ON c.id_cliente = e.id_cliente
+GROUP BY
+    c.id_cliente,
+    c.cli_nome
+ORDER BY quantidade_equipamentos DESC;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">09</span>
+                        <span class="sql-item-info">
+                            <strong>Valor total dos serviços</strong>
+                            <small>SUM</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Soma os valores de todos os serviços registrados,
+                            independentemente do status.
+                        </p>
+
+                        <pre><code>SELECT
+    SUM(ser_valor) AS valor_total_servicos
+FROM servicos;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">10</span>
+                        <span class="sql-item-info">
+                            <strong>Valor médio dos serviços</strong>
+                            <small>AVG · ROUND</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Calcula a média dos valores registrados,
+                            arredondada para duas casas decimais.
+                        </p>
+
+                        <pre><code>SELECT
+    ROUND(AVG(ser_valor), 2) AS valor_medio
+FROM servicos;</code></pre>
+                    </div>
+                </details>
+
+                <details class="sql-item">
+                    <summary>
+                        <span class="sql-number">12</span>
+                        <span class="sql-item-info">
+                            <strong>Valor total do estoque de peças</strong>
+                            <small>SUM · Multiplicação</small>
+                        </span>
+                    </summary>
+
+                    <div class="sql-content">
+                        <p>
+                            Multiplica a quantidade de cada peça pelo preço unitário
+                            e soma os resultados para estimar o valor do estoque.
+                        </p>
+
+                        <pre><code>SELECT
+    SUM(pec_quantidade * pec_preco) AS valor_total_estoque
+FROM pecas;</code></pre>
+                    </div>
+                </details>
+            </div>
+
         </section>
 
     </main>
@@ -179,7 +658,10 @@
     <!-- Rodapé -->
     <footer class="footer">
         <div class="container">
-            <p>Projeto Final de Banco de Dados Relacional | TechAssist &copy; 2026</p>
+            <p>
+                Projeto Final de Banco de Dados Relacional
+                | TechAssist &copy; 2026
+            </p>
         </div>
     </footer>
 
