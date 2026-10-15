@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechAssist - Projeto de Banco de Dados Relacional</title>
+    <link rel="stylesheet" href="./assets/css/main.css">
+</head>
+<body>
+
+    <!-- Cabeçalho Principal -->
+    <header class="header">
+        <div class="container">
+            <span class="badge">SGBD Relacional MySQL</span>
+            <h1>TechAssist Soluções em TI</h1>
+            <p>Documentação Completa de Modelagem, Normalização (1FN - 4FN), Scripts SQL e Cloud Hosting</p>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="container">
+
+        <!-- 1. Domínio & Contextualização -->
+        <section class="card">
+            <h2>1. Domínio & Contextualização do Negócio</h2>
+            <p>O projeto contempla o domínio de <strong>Gestão de Assistência Técnica de Equipamentos de TI (tech_assist)</strong>. A empresa <em>TechAssist</em> realiza manutenção em notebooks, computadores, celulares e impressoras.</p>
+            
+            <div class="grid-2">
+                <div class="box-problem">
+                    <h3>Cenário Sem SGBD Relacional</h3>
+                    <ul>
+                        <li>Cadastros duplicados de clientes e dados inconsistentes;</li>
+                        <li>Falta de vínculo entre proprietários e equipamentos;</li>
+                        <li>Dificuldade no rastreamento de técnicos e Ordens de Serviço (OS);</li>
+                        <li>Descontrole total no estoque de peças de reposição.</li>
+                    </ul>
+                </div>
+                <div class="box-solution">
+                    <h3> Solução com SGBD MySQL (InnoDB)</h3>
+                    <ul>
+                        <li>Propriedades ACID e integridade referencial estrita;</li>
+                        <li>Centralização do histórico de manutenção e faturamento;</li>
+                        <li>Agilidade na consulta de peças e alocação da equipe técnica;</li>
+                        <li>Métricas operacionais e relatórios gerenciais em tempo real.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Modelagem Lógica -->
+        <section class="card">
+            <h2>2. Modelagem Lógica do Banco de Dados</h2>
+            <p>Estrutura composta por 5 tabelas relacionais com chaves primárias (PK) e chaves estrangeiras (FK):</p>
+            
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tabela</th>
+                            <th>Campos / Atributos</th>
+                            <th>Tipo de Dado</th>
+                            <th>Chave / Restrição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>clientes</strong></td>
+                            <td>id_cliente, cli_nome, cli_cpf, cli_email, cli_telefone</td>
+                            <td>INT, VARCHAR(100), CHAR(11), VARCHAR(100)</td>
+                            <td>PK (Auto Inc), UNIQUE, NOT NULL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>equipamentos</strong></td>
+                            <td>id_equipamento, id_cliente, equ_tipo, equ_marca, equ_modelo, equ_problema</td>
+                            <td>INT, VARCHAR(100)</td>
+                            <td>PK, FK -> clientes(id_cliente)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>tecnicos</strong></td>
+                            <td>id_tecnico, tec_nome, tec_especialidade</td>
+                            <td>INT, VARCHAR(100)</td>
+                            <td>PK (Auto Inc), NOT NULL</td>
+                        </tr>
+                        <tr>
+                            <td><strong>servicos</strong></td>
+                            <td>id_servico, id_equipamento, id_tecnico, ser_data_entrada, ser_data_saida, ser_status, ser_valor</td>
+                            <td>INT, DATETIME, VARCHAR(50), DECIMAL(10,2)</td>
+                            <td>PK, FK -> equipamentos, FK -> tecnicos</td>
+                        </tr>
+                        <tr>
+                            <td><strong>pecas</strong></td>
+                            <td>id_peca, pec_nome, pec_quantidade, pec_preco</td>
+                            <td>INT, VARCHAR(100), DECIMAL(10,2)</td>
+                            <td>PK (Auto Inc), NOT NULL</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-highlight">
+                <h4>Relacionamentos e Cardinalidades:</h4>
+                <p>• <strong>clientes (1) &rarr; (N) equipamentos:</strong> Um cliente pode ter múltiplos equipamentos cadastrados.<br>
+                   • <strong>equipamentos (1) &rarr; (N) servicos:</strong> Um equipamento possui um histórico de várias OS.<br>
+                   • <strong>tecnicos (1) &rarr; (N) servicos:</strong> Um técnico assume diversas ordens de serviço ao longo do tempo.</p>
+            </div>
+        </section>
+
+        <!-- 3. Formas Normais -->
+        <section class="card">
+            <h2>3. Aplicação das Formas Normais</h2>
+            <div class="fn-grid">
+                <div class="fn-card">
+                    <span class="fn-badge">1FN</span>
+                    <h3>Primeira Forma Normal</h3>
+                    <p>Atributos atômicos e indivisíveis. Eliminação de colunas e grupos repetitivos.</p>
+                </div>
+                <div class="fn-card">
+                    <span class="fn-badge">2FN</span>
+                    <h3>Segunda Forma Normal</h3>
+                    <p>Atendimento à 1FN e dependência funcional total da Chave Primária simples.</p>
+                </div>
+                <div class="fn-card">
+                    <span class="fn-badge">3FN</span>
+                    <h3>Terceira Forma Normal</h3>
+                    <p>Eliminação de dependências transitivas entre atributos não-chave.</p>
+                </div>
+                <div class="fn-card">
+                    <span class="fn-badge">4FN</span>
+                    <h3>Quarta Forma Normal</h3>
+                    <p>Isolamento da tabela de peças para evitar dependências multivaloradas independentes.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Consultas Destaque -->
+        <section class="card">
+            <h2>4. Resumo de Faturamento e Indicadores (SQL)</h2>
+            <div class="metrics-grid">
+                <div class="metric-box">
+                    <span class="metric-number">R$ 1.980,00</span>
+                    <span class="metric-label">Faturamento Total Bruto (SUM)</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-number">R$ 247,50</span>
+                    <span class="metric-label">Ticket Médio por OS (AVG)</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-number">R$ 8.485,00</span>
+                    <span class="metric-label">Valor do Estoque de Peças</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Cloud Hosting & Dump -->
+        <section class="card">
+            <h2>5. Implantação em Nuvem & Backup (Dump)</h2>
+            <div class="grid-2">
+                <div>
+                    <h3>☁️ Hosting Cloud (Aiven / Azure)</h3>
+                    <ol>
+                        <li>Provisionamento do serviço <strong>Aiven for MySQL</strong>;</li>
+                        <li>Configuração de regras de firewall (IP Allowlist);</li>
+                        <li>Download do certificado de autoridade SSL (CA);</li>
+                        <li>Execução dos scripts DDL e DML via MySQL Workbench.</li>
+                    </ol>
+                </div>
+                <div>
+                    <h3>💾 Dump e Restauração</h3>
+                    <p><strong>Gerar Backup Completo:</strong></p>
+                    <pre><code>mysqldump -u root -p --databases tech_assist &gt; tech_assist_dump.sql</code></pre>
+                    <p><strong>Restaurar Banco de Dados:</strong></p>
+                    <pre><code>mysql -u root -p &lt; tech_assist_dump.sql</code></pre>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="container">
+            <p>Projeto Final de Banco de Dados Relacional | TechAssist &copy; 2026</p>
+        </div>
+    </footer>
+
+</body>
+</html>
